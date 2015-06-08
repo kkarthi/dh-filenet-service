@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 /**
  * 
- * Fix Me!
+ * This class contains the file-net related properties.
  *
  */
 public class FilenetDocumentRequest implements Serializable {
@@ -14,13 +14,13 @@ public class FilenetDocumentRequest implements Serializable {
 	private static final long serialVersionUID = 1329394228453430607L;
 
 	/**
-	 * 
+	 * This is a reference id.
 	 */
 	private String documentId;
 
 	/**
 	 * Once the file has been uploaded successfully, File-net creates a Unique ID for the future reference and which
-	 * will be used to identify the Document in File-net server.
+	 * will be used to identify the Document in the File-net server.
 	 */
 	private String filenetReferenceId;
 
@@ -30,17 +30,17 @@ public class FilenetDocumentRequest implements Serializable {
 	private String documentName;
 
 	/**
-	 * 
+	 * This field refers the location of the cache server.
 	 */
 	private String documentLocation;
 
 	/**
-	 * 
+	 * The actual document content.
 	 */
 	private InputStream documentStream;
 
 	/**
-	 * 
+	 * This field contains File-Net related meta data information.
 	 */
 	private final HashMap<String, String> filenetMetadata = new HashMap<String, String>();
 

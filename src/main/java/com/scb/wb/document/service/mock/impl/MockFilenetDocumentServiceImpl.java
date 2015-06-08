@@ -3,6 +3,7 @@ package com.scb.wb.document.service.mock.impl;
 import java.util.LinkedList;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,14 +15,14 @@ import com.scb.exception.CSException;
 import com.scb.jsonpojo.CSDocument;
 import com.scb.wb.document.model.FilenetDocumentRequest;
 import com.scb.wb.document.service.FilenetDocumentService;
-import com.scb.wb.filenet.service.impl.CSMockSetup;
+import com.scb.wb.filenet.service.mock.impl.CSMockSetup;
 
 /**
  * 
  * @see FilenetDocumentService
  *
  */
-@Service
+@Service("mockFilenetDocumentServiceImpl")
 @PropertySource("classpath:document-filenet.properties")
 public class MockFilenetDocumentServiceImpl implements FilenetDocumentService {
 
@@ -103,7 +104,7 @@ public class MockFilenetDocumentServiceImpl implements FilenetDocumentService {
 					query,
 					(filenetDocumentRequest.getDocumentLocation() == null) ? location : filenetDocumentRequest
 							.getDocumentLocation());
-			if (!csDocuments.isEmpty()) {
+			if (CollectionUtils.isNotEmpty(csDocuments)) {
 				final CSDocument csDocument = csDocuments.get(0);
 				final CS contentServiceDocumentContent = new CSMockSetup().getContentServiceDocumentContent();
 				return contentServiceDocumentContent

@@ -1,5 +1,6 @@
 package com.scb.wb.document.service;
 
+import com.scb.wb.document.exception.DocumentException;
 import com.scb.wb.document.model.FilenetDocumentRequest;
 
 /**
@@ -9,12 +10,12 @@ import com.scb.wb.document.model.FilenetDocumentRequest;
  */
 public interface FilenetDocumentService {
 
-	String uploadDocument(FilenetDocumentRequest filenetDocumentRequest);
+	String uploadDocument(FilenetDocumentRequest filenetDocumentRequest) throws DocumentException;
 
-	String overwriteDocument(FilenetDocumentRequest filenetDocumentRequest);
+	String overwriteDocument(FilenetDocumentRequest filenetDocumentRequest) throws DocumentException;
 
-	String getDocumentDownloadUrl(FilenetDocumentRequest filenetDocumentRequest);
+	String getDocumentDownloadUrl(FilenetDocumentRequest filenetDocumentRequest) throws DocumentException;
 
-	boolean deleteDocument(FilenetDocumentRequest filenetDocumentRequest);
+	boolean deleteDocument(FilenetDocumentRequest filenetDocumentRequest) throws DocumentException;
 
 }

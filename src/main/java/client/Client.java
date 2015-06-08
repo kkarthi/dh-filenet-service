@@ -5,19 +5,15 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
-import com.scb.wb.document.model.FilenetDocumentRequest;
-import com.scb.wb.document.service.FilenetDocumentService;
+import com.scb.wb.document.exception.DocumentException;
 
-// TODO: Delete this class.
 @SpringBootApplication
-@ComponentScan(basePackages = "com.scb.wb.document")
+@ComponentScan(basePackages = { "com.scb.wb.document", "client" })
 public class Client {
 
-	public static void main(final String[] args) {
+	public static void main(final String[] args) throws DocumentException {
 		final ConfigurableApplicationContext context = new SpringApplicationBuilder().sources(Client.class)
 				.profiles("app").run(args);
-		final FilenetDocumentService bean = context.getBean(FilenetDocumentService.class);
-		bean.uploadDocument(new FilenetDocumentRequest());
+		context.getBean(ExternalFilenetServiceSimulator.class).uploadDocument();
 	}
-
 }

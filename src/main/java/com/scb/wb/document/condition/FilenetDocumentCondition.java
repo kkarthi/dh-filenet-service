@@ -6,6 +6,12 @@ import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
+/**
+ * 
+ * This class used for Conditional injection, it checks whether the file-net mock is enabled or not. It Injects the
+ * Actual File-net service.
+ *
+ */
 public class FilenetDocumentCondition implements Condition {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FilenetDocumentCondition.class);

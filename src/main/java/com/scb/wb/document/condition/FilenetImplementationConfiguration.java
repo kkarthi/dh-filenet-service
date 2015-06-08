@@ -1,42 +1,49 @@
 package com.scb.wb.document.condition;
 
+import static org.springframework.util.Assert.notNull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
 import com.scb.wb.document.service.FilenetDocumentService;
-import com.scb.wb.document.service.impl.FilenetDocumentServiceImpl;
 
+/**
+ * 
+ * This is the {@link Configuration} class and it's a decider object. It injects <b>Mock</b> or <b>Real</b> instance
+ * based on the {@link Condition}.
+ *
+ */
 @Configuration
 public class FilenetImplementationConfiguration {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FilenetImplementationConfiguration.class);
 
 	@Autowired
-	private ConfigurableApplicationContext context;
+	@Qualifier("mockFilenetDocumentServiceImpl")
+	private FilenetDocumentService mockFilenetDocumentService;
+
+	@Autowired
+	@Qualifier("filenetDocumentServiceImpl")
+	private FilenetDocumentService filenetDocumentService;
 
 	@Bean(name = "filenetDocumentService")
 	@Conditional(FilenetDocumentMockCondition.class)
 	public FilenetDocumentService mockFilenetDocumentService() {
+		notNull(mockFilenetDocumentService, "mockFilenetDocumentService should not be null");
 		LOGGER.info("Called mockFilenetDocumentService ");
-		final BeanDefinitionRegistry beanFactory = (BeanDefinitionRegistry) context.getBeanFactory();
-		beanFactory.removeBeanDefinition("filenetDocumentService");
-		beanFactory.removeBeanDefinition("filenetDocumentServiceImpl");
-		return (FilenetDocumentService) context.getBean("mockFilenetDocumentServiceImpl");
+		return mockFilenetDocumentService;
 	}
 
 	@Bean(name = "filenetDocumentService")
 	@Conditional(FilenetDocumentCondition.class)
 	public FilenetDocumentService actualFilenetDocumentService() {
-		LOGGER.info("Called filenetDocumentService");
-		final BeanDefinitionRegistry beanFactory = (BeanDefinitionRegistry) context.getBeanFactory();
-		beanFactory.removeBeanDefinition("filenetDocumentServiceImpl");
-		beanFactory.removeBeanDefinition("mockFilenetDocumentServiceImpl");
-		return new FilenetDocumentServiceImpl();
+		notNull(filenetDocumentService, "filenetDocumentService should not be null");
+		LOGGER.info("Called filenetDocumentService ");
+		return filenetDocumentService;
 	}
 }
