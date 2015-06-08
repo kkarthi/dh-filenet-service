@@ -22,6 +22,7 @@ public class ExternalFilenetServiceSimulator {
 		final FilenetDocumentRequest filenetDocumentRequest = new FilenetDocumentRequest();
 		filenetDocumentRequest.getFilenetMetadata().put("Test", "Test");
 		filenetDocumentRequest.setDocumentName("Test");
+		filenetDocumentRequest.setAppGroup("WB");
 
 		filenetDocumentService.uploadDocument(filenetDocumentRequest);
 	}

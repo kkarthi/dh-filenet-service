@@ -40,6 +40,11 @@ public class FilenetDocumentRequest implements Serializable {
 	private InputStream documentStream;
 
 	/**
+	 * 
+	 */
+	private String appGroup;
+
+	/**
 	 * This field contains File-Net related meta data information.
 	 */
 	private final HashMap<String, String> filenetMetadata = new HashMap<String, String>();
@@ -117,6 +122,21 @@ public class FilenetDocumentRequest implements Serializable {
 	 */
 	public void setDocumentStream(final InputStream documentStream) {
 		this.documentStream = documentStream;
+	}
+
+	/**
+	 * @return the appGroup
+	 */
+	public String getAppGroup() {
+		return appGroup;
+	}
+
+	/**
+	 * @param appGroup
+	 *            the appGroup to set
+	 */
+	public void setAppGroup(final String appGroup) {
+		this.appGroup = appGroup;
 	}
 
 	/**

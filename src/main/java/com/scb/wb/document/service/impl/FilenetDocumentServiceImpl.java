@@ -7,11 +7,13 @@ import java.util.Map;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.scb.cs.client.CS;
+import com.scb.exception.CSException;
 import com.scb.jsonpojo.CSDocument;
+import com.scb.wb.document.condition.FilenetImplementationConfiguration.FilenetProerties;
 import com.scb.wb.document.exception.DocumentException;
 import com.scb.wb.document.model.FilenetDocumentRequest;
 import com.scb.wb.document.service.FilenetDocumentService;
@@ -31,37 +33,22 @@ public class FilenetDocumentServiceImpl implements FilenetDocumentService {
 	private static final String TOKEN_SECRET = "tokenSecret";
 	private static final String REQUEST_TOKEN = "requestToken";
 
-	@Value("${document.filenet.csURL}")
-	private String csURL;
-
-	@Value("${document.filenet.consumerKey}")
-	private String consumerKey;
-
-	@Value("${document.filenet.consumerSecret}")
-	private String consumerSecret;
-
-	@Value("${document.filenet.bankId}")
-	private String bankId;
-
-	@Value("${document.filenet.documentClass}")
-	private String documentClass;
-
-	@Value("${document.filenet.objectStore}")
-	private String objectStore;
-
-	@Value("${document.filenet.folderPath}")
-	private String folderPath;
-
-	@Value("${document.filenet.location}")
-	private String location;
+	@Autowired
+	private FilenetProerties properties;
 
 	@Override
 	public String uploadDocument(final FilenetDocumentRequest filenetDocumentRequest) throws DocumentException {
+		final Map<String, String> filenetProperties = getFilenetProperties(filenetDocumentRequest);
+
+		final String csURL = filenetProperties.get("document.filenet.csURL");
+		final String consumerSecret = filenetProperties.get("document.filenet.consumerSecret");
+		final String objectStore = filenetProperties.get("document.filenet.objectStore");
+		final String documentClass = filenetProperties.get("document.filenet.documentClass");
 		try {
 			final CS contentService = new CS(csURL);
-			final Map<String, String> tokens = contentService.requestToken(consumerKey, consumerSecret, bankId);
-			final String requestToken = tokens.get(REQUEST_TOKEN);
-			final String tokenSecret = tokens.get(TOKEN_SECRET);
+			final HashMap<String, String> token = getToken(contentService, filenetDocumentRequest);
+			final String requestToken = token.get(REQUEST_TOKEN);
+			final String tokenSecret = token.get(TOKEN_SECRET);
 			final String documentReferenceID = contentService
 					.addDocument(requestToken, tokenSecret, consumerSecret,
 							filenetDocumentRequest.getFilenetMetadata(), filenetDocumentRequest.getDocumentStream(),
@@ -78,12 +65,18 @@ public class FilenetDocumentServiceImpl implements FilenetDocumentService {
 
 	@Override
 	public String overwriteDocument(final FilenetDocumentRequest filenetDocumentRequest) throws DocumentException {
+		final Map<String, String> filenetProperties = getFilenetProperties(filenetDocumentRequest);
+
+		final String csURL = filenetProperties.get("document.filenet.csURL");
+		final String consumerSecret = filenetProperties.get("document.filenet.consumerSecret");
+		final String objectStore = filenetProperties.get("document.filenet.objectStore");
+
 		try {
 			final CS contentService = new CS(csURL);
 			LOGGER.info("FILEUPLOAD: getDocumentVersion");
-			final HashMap<String, String> tokens = contentService.requestToken(consumerKey, consumerSecret, bankId);
-			final String requestToken = tokens.get(REQUEST_TOKEN);
-			final String tokenSecret = tokens.get(TOKEN_SECRET);
+			final HashMap<String, String> token = getToken(contentService, filenetDocumentRequest);
+			final String requestToken = token.get(REQUEST_TOKEN);
+			final String tokenSecret = token.get(TOKEN_SECRET);
 			final String documentReferenceID = contentService.versionDocument(requestToken, tokenSecret,
 					consumerSecret, objectStore, filenetDocumentRequest.getFilenetReferenceId(),
 					filenetDocumentRequest.getDocumentStream(),
@@ -99,17 +92,24 @@ public class FilenetDocumentServiceImpl implements FilenetDocumentService {
 
 	@Override
 	public String getDocumentDownloadUrl(final FilenetDocumentRequest filenetDocumentRequest) throws DocumentException {
+		final Map<String, String> filenetProperties = getFilenetProperties(filenetDocumentRequest);
+
+		final String csURL = filenetProperties.get("document.filenet.csURL");
+		final String consumerSecret = filenetProperties.get("document.filenet.consumerSecret");
+		final String objectStore = filenetProperties.get("document.filenet.objectStore");
+		final String documentClass = filenetProperties.get("document.filenet.documentClass");
+
 		try {
 			final CS contentService = new CS(csURL);
 			final String query = "SELECT Id, DocumentTitle,ContentSize, DateCreated, MIMEType " + " FROM "
 					+ documentClass + " WHERE Id = " + filenetDocumentRequest.getFilenetReferenceId();
-			final HashMap<String, String> tokens = contentService.requestToken(consumerKey, consumerSecret, bankId);
-			final String requestToken = tokens.get(REQUEST_TOKEN);
-			final String tokenSecret = tokens.get(TOKEN_SECRET);
-			final String documentLocation = (filenetDocumentRequest.getDocumentLocation() == null) ? location
-					: filenetDocumentRequest.getDocumentLocation();
+			final HashMap<String, String> token = getToken(contentService, filenetDocumentRequest);
+			final String requestToken = token.get(REQUEST_TOKEN);
+			final String tokenSecret = token.get(TOKEN_SECRET);
+			final String location = (filenetDocumentRequest.getDocumentLocation() == null) ? filenetProperties
+					.get("document.filenet.location") : filenetDocumentRequest.getDocumentLocation();
 			final LinkedList<CSDocument> csdocs = contentService.getDocumentsListFromQuery(requestToken, tokenSecret,
-					consumerSecret, objectStore, query, documentLocation);
+					consumerSecret, objectStore, query, location);
 			if (CollectionUtils.isNotEmpty(csdocs)) {
 				final CSDocument csDocument = csdocs.get(0);
 				return contentService.getDocumentContent(requestToken, tokenSecret, consumerSecret, objectStore, true,
@@ -124,11 +124,17 @@ public class FilenetDocumentServiceImpl implements FilenetDocumentService {
 
 	@Override
 	public boolean deleteDocument(final FilenetDocumentRequest filenetDocumentRequest) throws DocumentException {
+		final Map<String, String> filenetProperties = getFilenetProperties(filenetDocumentRequest);
+
+		final String consumerSecret = filenetProperties.get("document.filenet.consumerSecret");
+		final String objectStore = filenetProperties.get("document.filenet.objectStore");
+
+		final String csURL = filenetProperties.get("document.filenet.csURL");
 		try {
 			final CS contentService = new CS(csURL);
-			final HashMap<String, String> tokens = contentService.requestToken(consumerKey, consumerSecret, bankId);
-			final String requestToken = tokens.get(REQUEST_TOKEN);
-			final String tokenSecret = tokens.get(TOKEN_SECRET);
+			final HashMap<String, String> token = getToken(contentService, filenetDocumentRequest);
+			final String requestToken = token.get(REQUEST_TOKEN);
+			final String tokenSecret = token.get(TOKEN_SECRET);
 			return contentService.deleteDocument(requestToken, tokenSecret, consumerSecret, objectStore,
 					filenetDocumentRequest.getFilenetReferenceId());
 		} catch (final Exception e) {
@@ -136,4 +142,21 @@ public class FilenetDocumentServiceImpl implements FilenetDocumentService {
 			throw new DocumentException(e.getMessage(), e);
 		}
 	}
+
+	private HashMap<String, String> getToken(final CS contentService,
+			final FilenetDocumentRequest filenetDocumentRequest) throws CSException {
+		final Map<String, String> filenetProperties = getFilenetProperties(filenetDocumentRequest);
+
+		final String consumerKey = filenetProperties.get("document.filenet.consumerKey");
+		final String consumerSecret = filenetProperties.get("document.filenet.consumerSecret");
+		final String bankId = filenetProperties.get("document.filenet.bankId");
+
+		return contentService.requestToken(consumerKey, consumerSecret, bankId);
+	}
+
+	private Map<String, String> getFilenetProperties(final FilenetDocumentRequest filenetDocumentRequest) {
+		final Map<String, Map<String, String>> filenetProerties = properties.getFilenetProerties();
+		return filenetProerties.get(filenetDocumentRequest.getAppGroup());
+	}
+
 }
