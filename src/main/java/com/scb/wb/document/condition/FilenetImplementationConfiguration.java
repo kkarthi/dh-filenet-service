@@ -68,7 +68,7 @@ public class FilenetImplementationConfiguration {
 		public Map<String, Map<String, String>> getFilenetProerties() {
 			// TODO Fix Me! Database fetch!
 			filenetProerties.put("WB", getCSWBProperties());
-			filenetProerties.put("WB", getCSCDDProperties());
+			filenetProerties.put("CDD", getCSCDDProperties());
 			return filenetProerties;
 		}
 

@@ -101,8 +101,7 @@ public class FilenetDocumentServiceImpl implements FilenetDocumentService {
 
 		try {
 			final CS contentService = new CS(csURL);
-			final String query = "SELECT Id, DocumentTitle,ContentSize, DateCreated, MIMEType " + " FROM "
-					+ documentClass + " WHERE Id = " + filenetDocumentRequest.getFilenetReferenceId();
+			final String query = getDownloadQuery(filenetDocumentRequest, documentClass);
 			final HashMap<String, String> token = getToken(contentService, filenetDocumentRequest);
 			final String requestToken = token.get(REQUEST_TOKEN);
 			final String tokenSecret = token.get(TOKEN_SECRET);
@@ -157,6 +156,13 @@ public class FilenetDocumentServiceImpl implements FilenetDocumentService {
 	private Map<String, String> getFilenetProperties(final FilenetDocumentRequest filenetDocumentRequest) {
 		final Map<String, Map<String, String>> filenetProerties = properties.getFilenetProerties();
 		return filenetProerties.get(filenetDocumentRequest.getAppGroup());
+	}
+
+	private String getDownloadQuery(final FilenetDocumentRequest filenetDocumentRequest, final String documentClass) {
+		final StringBuilder builder = new StringBuilder();
+		builder.append("SELECT Id, DocumentTitle, ContentSize, DateCreated, MIMEType FROM ");
+		builder.append(documentClass).append(" WHERE Id = ").append(filenetDocumentRequest.getFilenetReferenceId());
+		return builder.toString();
 	}
 
 }
