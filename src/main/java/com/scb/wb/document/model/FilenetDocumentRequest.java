@@ -25,21 +25,6 @@ public class FilenetDocumentRequest implements Serializable {
 	private String filenetReferenceId;
 
 	/**
-	 * dealId
-	 */
-	private String dealId;
-
-	/**
-	 * docCategory
-	 */
-	private String docCategory;
-
-	/**
-	 * userFullName
-	 */
-	private String userFullName;
-
-	/**
 	 * This field used to define the document name.
 	 */
 	private String documentName;
@@ -80,36 +65,6 @@ public class FilenetDocumentRequest implements Serializable {
 	}
 
 	/**
-	 * @return the dealId
-	 */
-	public String getDealId() {
-		return dealId;
-	}
-
-	/**
-	 * @param dealId
-	 *            the documentId to set
-	 */
-	public void setDealId(final String dealId) {
-		this.dealId = dealId;
-	}
-
-	/**
-	 * @return the docCategory
-	 */
-	public String getDocCategory() {
-		return docCategory;
-	}
-
-	/**
-	 * @param docCategory
-	 *            the docCategory to set
-	 */
-	public void setDocCategory(final String docCategory) {
-		this.docCategory = docCategory;
-	}
-
-	/**
 	 * @return the filenetReferenceId
 	 */
 	public String getFilenetReferenceId() {
@@ -122,21 +77,6 @@ public class FilenetDocumentRequest implements Serializable {
 	 */
 	public void setFilenetReferenceId(final String filenetReferenceId) {
 		this.filenetReferenceId = filenetReferenceId;
-	}
-
-	/**
-	 * @return the userFullName
-	 */
-	public String getUserFullName() {
-		return userFullName;
-	}
-
-	/**
-	 * @param userFullName
-	 *            the documentName to set
-	 */
-	public void setUserFullName(final String userFullName) {
-		this.userFullName = userFullName;
 	}
 
 	/**

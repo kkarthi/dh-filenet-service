@@ -1,12 +1,6 @@
 package com.scb.wb.document.service.util;
 
-import java.util.HashMap;
-
 import javax.activation.MimetypesFileTypeMap;
-
-import org.apache.commons.io.FilenameUtils;
-
-import com.scb.wb.document.model.FilenetDocumentRequest;
 
 /**
  * This class used for construct the File-net related request.
@@ -34,23 +28,4 @@ public final class FilenetUtil {
 	public static String getMimeType(final String fileName) {
 		return mimetypesFileTypeMap.getContentType(fileName);
 	}
-
-	public static HashMap<String, String> getDocumentProperties(final FilenetDocumentRequest filenetDocumentRequest) {
-		final HashMap<String, String> propertiesValues = new HashMap<String, String>();
-
-		propertiesValues.put("DocumentTitle", filenetDocumentRequest.getDocumentName());
-		propertiesValues.put("DocumentName", filenetDocumentRequest.getDocumentName());
-		propertiesValues.put("DocumentType", FilenameUtils.getExtension(filenetDocumentRequest.getDocumentName()));
-		propertiesValues.put("Country", filenetDocumentRequest.getDocumentLocation());
-		propertiesValues.put("DocCategory", filenetDocumentRequest.getDocCategory());
-		propertiesValues.put("DocID", filenetDocumentRequest.getDocumentId());
-		propertiesValues.put("ProductoftheDeal", filenetDocumentRequest.getDealId());
-		propertiesValues.put("UserFullName", filenetDocumentRequest.getUserFullName());
-		propertiesValues.put("DateTimeofUpload", System.currentTimeMillis() + "");
-		propertiesValues.put("DealID", filenetDocumentRequest.getDealId());
-		propertiesValues.put("ClientIDorProspectID", filenetDocumentRequest.getDealId());
-		propertiesValues.put("SubProductoftheDeal", filenetDocumentRequest.getDealId());
-		return propertiesValues;
-	}
-
 }
