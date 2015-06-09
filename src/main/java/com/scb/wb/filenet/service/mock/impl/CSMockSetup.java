@@ -152,6 +152,7 @@ public class CSMockSetup {
 				new Answer<Object>() {
 					@Override
 					public Object answer(final InvocationOnMock invocation) {
+						LOGGER.info("Generated URL value " + URL);
 						return URL;
 					}
 				});

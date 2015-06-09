@@ -36,27 +36,21 @@ public final class FilenetUtil {
 	}
 
 	public static HashMap<String, String> getDocumentProperties(final FilenetDocumentRequest filenetDocumentRequest) {
-
 		final HashMap<String, String> propertiesValues = new HashMap<String, String>();
 
 		propertiesValues.put("DocumentTitle", filenetDocumentRequest.getDocumentName());
 		propertiesValues.put("DocumentName", filenetDocumentRequest.getDocumentName());
 		propertiesValues.put("DocumentType", FilenameUtils.getExtension(filenetDocumentRequest.getDocumentName()));
 		propertiesValues.put("Country", filenetDocumentRequest.getDocumentLocation());
-		setDocumentCategory(propertiesValues);
-		// TODO : Fix Me!
-		propertiesValues.put("DocID", "");
-		propertiesValues.put("ProductoftheDeal", "");
-		propertiesValues.put("UserFullName", "");
+		propertiesValues.put("DocCategory", filenetDocumentRequest.getDocCategory());
+		propertiesValues.put("DocID", filenetDocumentRequest.getDocumentId());
+		propertiesValues.put("ProductoftheDeal", filenetDocumentRequest.getDealId());
+		propertiesValues.put("UserFullName", filenetDocumentRequest.getUserFullName());
 		propertiesValues.put("DateTimeofUpload", System.currentTimeMillis() + "");
-		propertiesValues.put("DealID", "");
-		propertiesValues.put("ClientIDorProspectID", "");
-		propertiesValues.put("SubProductoftheDeal", "");
+		propertiesValues.put("DealID", filenetDocumentRequest.getDealId());
+		propertiesValues.put("ClientIDorProspectID", filenetDocumentRequest.getDealId());
+		propertiesValues.put("SubProductoftheDeal", filenetDocumentRequest.getDealId());
 		return propertiesValues;
-	}
-
-	private static void setDocumentCategory(final HashMap<String, String> propertiesValues) {
-		propertiesValues.put("DocCategory", "Transaction Documents");
 	}
 
 }

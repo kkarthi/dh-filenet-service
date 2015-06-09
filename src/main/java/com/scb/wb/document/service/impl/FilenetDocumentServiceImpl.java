@@ -111,8 +111,10 @@ public class FilenetDocumentServiceImpl implements FilenetDocumentService {
 					consumerSecret, objectStore, query, location);
 			if (CollectionUtils.isNotEmpty(csdocs)) {
 				final CSDocument csDocument = csdocs.get(0);
-				return contentService.getDocumentContent(requestToken, tokenSecret, consumerSecret, objectStore, true,
-						false, csDocument.getContentLink());
+				final String url = contentService.getDocumentContent(requestToken, tokenSecret, consumerSecret,
+						objectStore, true, false, csDocument.getContentLink());
+				LOGGER.info("Document URL : " + url);
+				return url;
 			}
 			return null;
 		} catch (final Exception e) {

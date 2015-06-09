@@ -49,5 +49,4 @@ public interface FilenetDocumentService {
 	 * @throws DocumentException
 	 */
 	boolean deleteDocument(FilenetDocumentRequest filenetDocumentRequest) throws DocumentException;
-
 }
